@@ -14,7 +14,7 @@ export default function AffiliatePage() {
     <ReferralProvider
       becomeAnAffiliateUrl="https://orderly.network/"
       learnAffiliateUrl="https://orderly.network/"
-      referralLinkUrl="/"
+      referralLinkUrl={window?.location?.origin}
       overwrite={{
         shortBrokerName: "Orderly",
         brokerName: "Orderly",
