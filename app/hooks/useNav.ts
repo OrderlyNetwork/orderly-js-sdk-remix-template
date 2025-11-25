@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useNavigate } from "@remix-run/react";
 import { i18n, parseI18nLang } from "@orderly.network/i18n";
 import { PortfolioLeftSidebarPath } from "@orderly.network/portfolio";
-import { RouteOption } from "@orderly.network/ui-scaffold";
+import { RouteOption } from "@orderly.network/types";
 import { PathEnum } from "@/constant";
 import { getSymbol } from "@/storage";
 
