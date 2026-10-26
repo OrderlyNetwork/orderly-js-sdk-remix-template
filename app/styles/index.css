@@ -1,3 +1,8 @@
 @import "@orderly.network/ui/dist/styles.css";
 @import "../styles/theme.css";
 @import "../styles/fonts.css";
+
+/* Keep the mobile sidebar from shrinking the padded logo asset to 18px. */
+img.orderly-app-logo {
+  height: 40px !important;
+}

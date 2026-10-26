@@ -1,12 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { MetaFunction } from "@remix-run/node";
-import { useNavigate, useParams } from "@remix-run/react";
-import { i18n, parseI18nLang } from "@orderly.network/i18n";
+import { useParams } from "@remix-run/react";
 import { TradingPage } from "@orderly.network/trading";
-import { API } from "@orderly.network/types";
-import { PathEnum } from "@/constant";
 import { useOrderlyConfig } from "@/hooks/useOrderlyConfig";
-import { updateSymbol } from "@/storage";
+import { setPerpSymbol } from "@/perpSymbolStorage";
 import { formatSymbol, generatePageTitle } from "@/utils";
 
 export const meta: MetaFunction = ({ params }) => {
@@ -15,27 +12,17 @@ export const meta: MetaFunction = ({ params }) => {
 
 export default function PerpPage() {
   const config = useOrderlyConfig();
-  const params = useParams();
-  const [symbol, setSymbol] = useState(params.symbol!);
-  const navigate = useNavigate();
+  const { symbol } = useParams();
 
   useEffect(() => {
-    updateSymbol(symbol);
+    if (symbol) setPerpSymbol(symbol);
   }, [symbol]);
 
-  const onSymbolChange = useCallback(
-    (data: API.Symbol) => {
-      const symbol = data.symbol;
-      setSymbol(symbol);
-      navigate(`/${parseI18nLang(i18n.language)}${PathEnum.Perp}/${symbol}`);
-    },
-    [navigate],
-  );
+  if (!symbol) return null;
 
   return (
     <TradingPage
       symbol={symbol}
-      onSymbolChange={onSymbolChange}
       tradingViewConfig={config.tradingPage.tradingViewConfig}
       sharePnLConfig={config.tradingPage.sharePnLConfig}
     />

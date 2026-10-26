@@ -2,6 +2,7 @@ import { MetaFunction } from "@remix-run/node";
 import { OrdersModule } from "@orderly.network/portfolio";
 import { Box } from "@orderly.network/ui";
 import { PageTitleMap, PathEnum } from "@/constant";
+import { useOrderlyConfig } from "@/hooks/useOrderlyConfig";
 import { generatePageTitle } from "@/utils";
 
 export const meta: MetaFunction = () => {
@@ -9,6 +10,8 @@ export const meta: MetaFunction = () => {
 };
 
 export default function OrdersPage() {
+  const config = useOrderlyConfig();
+
   return (
     <Box
       p={6}
@@ -24,7 +27,9 @@ export default function OrdersPage() {
         height: "calc(100vh - 48px - 29px - 48px)",
       }}
     >
-      <OrdersModule.OrdersPage />
+      <OrdersModule.OrdersPage
+        sharePnLConfig={config.tradingPage.sharePnLConfig}
+      />
     </Box>
   );
 }

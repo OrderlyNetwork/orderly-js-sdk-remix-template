@@ -17,8 +17,7 @@ import {
   getLocalePathFromPathname,
   removeLangPrefix,
 } from "@orderly.network/i18n";
-import { PathEnum } from "./constant";
-import { DEFAULT_SYMBOL } from "./storage";
+import { DEFAULT_SYMBOL, PathEnum } from "./constant";
 
 // Get the locale from cookie
 async function getLocaleFromCookie(request: Request) {
@@ -26,6 +25,16 @@ async function getLocaleFromCookie(request: Request) {
   const cookie = parse(cookieHeader || "");
   const cookieLang = cookie[i18nCookieKey] || LocaleEnum.en;
   return parseI18nLang(cookieLang);
+}
+
+const knownAppPaths = Object.values(PathEnum).filter(
+  (path) => path !== PathEnum.Root,
+);
+
+function matchesKnownAppPath(pathname: string) {
+  return knownAppPaths.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  );
 }
 
 const ABORT_DELAY = 5_000;
@@ -58,14 +67,11 @@ export default async function handleRequest(
     let newPathname = pathname;
 
     const cookieLocale = await getLocaleFromCookie(request);
-    const localePaths = Object.values(PathEnum);
 
     if (pathname === "/") {
       newPathname = `/${cookieLocale}${PathEnum.Perp}/${DEFAULT_SYMBOL}`;
-    } else if (localePaths.includes(pathname as PathEnum)) {
+    } else if (matchesKnownAppPath(pathname)) {
       newPathname = `/${cookieLocale}${pathname}`;
-    } else if (pathname.startsWith(PathEnum.Perp)) {
-      newPathname = `/${cookieLocale}${PathEnum.Perp}/${DEFAULT_SYMBOL}`;
     }
 
     if (newPathname !== pathname) {
