@@ -6,21 +6,17 @@ import {
   ScrollRestoration,
   useLocation,
 } from "@remix-run/react";
-import { getLocalePathFromPathname, i18n } from "@orderly.network/i18n";
+import { getLocalePathFromPathname } from "@orderly.network/i18n";
 import OrderlyProvider from "@/components/orderlyProvider";
+import { getDocumentDirection, getDocumentLanguage } from "@/utils/locale";
 import "./styles/index.css";
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const location = useLocation();
-  const localePath = getLocalePathFromPathname(location.pathname);
-
-  // if url is include lang, and url lang is not the same as the i18n language, change the i18n language
-  if (localePath && localePath !== i18n.language) {
-    i18n.changeLanguage(localePath);
-  }
+  const { pathname } = useLocation();
+  const locale = getLocalePathFromPathname(pathname) ?? "en";
 
   return (
-    <html lang="en">
+    <html lang={getDocumentLanguage(locale)} dir={getDocumentDirection(locale)}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

@@ -48,7 +48,8 @@ export default async function handleRequest(
   const pathWithoutLang = removeLangPrefix(pathname);
 
   if (pathWithoutLang === PathEnum.Perp) {
-    url.pathname = `/${localePath}${PathEnum.Perp}/${DEFAULT_SYMBOL}`;
+    const locale = localePath ?? (await getLocaleFromCookie(request));
+    url.pathname = `/${locale}${PathEnum.Perp}/${DEFAULT_SYMBOL}`;
     return redirect(url.toString());
   }
 

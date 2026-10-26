@@ -1,8 +1,8 @@
 import { vitePlugin as remix } from "@remix-run/dev";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 import { cjsInterop } from "vite-plugin-cjs-interop";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 declare module "@remix-run/node" {
   interface Future {
@@ -12,7 +12,11 @@ declare module "@remix-run/node" {
 
 export default defineConfig(() => {
   const isProduction = process.env.NODE_ENV === "production";
-  const noExternal: any[] = [/^@orderly.*$/, "@uiw/react-split"];
+  const noExternal: any[] = [
+    /^@orderly.*$/,
+    "@uiw/react-split",
+    "use-constant",
+  ];
   if (isProduction) {
     noExternal.push("ethers");
   }
