@@ -18,6 +18,7 @@ import {
   removeLangPrefix,
 } from "@orderly.network/i18n";
 import { DEFAULT_SYMBOL, PathEnum } from "./constant";
+import { migratePredictionPath } from "./navigationPaths";
 
 // Get the locale from cookie
 async function getLocaleFromCookie(request: Request) {
@@ -62,23 +63,21 @@ export default async function handleRequest(
     return redirect(url.toString());
   }
 
-  // If the pathname has a locale path, return
+  const migratedPathname = migratePredictionPath(pathname);
+  let newPathname = migratedPathname;
+
   if (!localePath) {
-    let newPathname = pathname;
-
     const cookieLocale = await getLocaleFromCookie(request);
-
     if (pathname === "/") {
       newPathname = `/${cookieLocale}${PathEnum.Perp}/${DEFAULT_SYMBOL}`;
-    } else if (matchesKnownAppPath(pathname)) {
-      newPathname = `/${cookieLocale}${pathname}`;
+    } else if (matchesKnownAppPath(migratedPathname)) {
+      newPathname = `/${cookieLocale}${migratedPathname}`;
     }
+  }
 
-    if (newPathname !== pathname) {
-      console.log(`redirect: ${pathname} ==> ${newPathname}`);
-      url.pathname = newPathname;
-      return redirect(url.toString());
-    }
+  if (newPathname !== pathname) {
+    url.pathname = newPathname;
+    return redirect(url.toString());
   }
   /** custom logic end */
 
